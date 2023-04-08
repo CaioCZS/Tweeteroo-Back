@@ -3,7 +3,7 @@ import cors from "cors"
 const server = express();
 server.use(express.json());
 server.use(cors())
-let user = {}
+let user;
 const usuarios = [
   {
     username: "bobesponja",
@@ -22,11 +22,22 @@ server.post("/sign-up" , (req ,res)=>{
     const {username ,avatar} = req.body
     user = { username , avatar}
     usuarios.push(user)
-    res.send("OK")
+    res.status(201).send("OK")
+})
+
+server.post("/tweets" , (req,res)=>{
+    const {username , tweet} = req.body
+    if(!user){
+       return res.status(401).send("UNAUTHORIZED")
+    }
+    const newTweet = {username , tweet}
+    tweets.push(newTweet) 
+
+    res.status(201).send("OK")
 })
 
 server.get("/usu" , (req ,res)=>{
-    res.send(usuarios)
+    res.send(tweets)
 })
 
 server.listen(5000);
