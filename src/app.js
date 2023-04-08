@@ -4,7 +4,7 @@ import { type } from "os";
 const server = express();
 server.use(express.json());
 server.use(cors())
-let user;
+let userAtual;
 const usuarios = [
   {
     username: "bobesponja",
@@ -21,32 +21,33 @@ const tweets = [
 
 server.post("/sign-up" , (req ,res)=>{
     const {username ,avatar} = req.body
-    user = { username , avatar}
+    userAtual = { username , avatar}
 if(!username || typeof username !== "string" || !avatar  ||  typeof avatar !== "string" ){
     return res.sendStatus(400)
 }
 
-    usuarios.push(user)
+    usuarios.push(userAtual)
     res.status(201).send("OK")
 })
 
 server.post("/tweets" , (req,res)=>{
-    const {username , tweet} = req.body
-    if(!user){
+    const {tweet} = req.body
+    const {user} = req.headers
+    if(!userAtual){
        return res.status(401).send("UNAUTHORIZED")
     }
 
-    if(!username|| typeof username !== "string" || !tweet || typeof tweet !== "string"){
+    if(!tweet || typeof tweet !== "string"){
         return res.sendStatus(400)
     }
-    const newTweet = {username , tweet}
+    const newTweet = {username:user , tweet}
     tweets.push(newTweet) 
 
     res.status(201).send("OK")
 })
 
 server.get("/usu" , (req ,res)=>{
-    res.send(usuarios)
+    res.send(tweets)
 })
 
 server.listen(5000);
