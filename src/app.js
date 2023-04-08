@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors"
+import { type } from "os";
 const server = express();
 server.use(express.json());
 server.use(cors())
@@ -21,6 +22,10 @@ const tweets = [
 server.post("/sign-up" , (req ,res)=>{
     const {username ,avatar} = req.body
     user = { username , avatar}
+if(!username || typeof username !== "string" || !avatar  ||  typeof avatar !== "string" ){
+    return res.sendStatus(400)
+}
+
     usuarios.push(user)
     res.status(201).send("OK")
 })
@@ -30,6 +35,10 @@ server.post("/tweets" , (req,res)=>{
     if(!user){
        return res.status(401).send("UNAUTHORIZED")
     }
+
+    if(!username|| typeof username !== "string" || !tweet || typeof tweet !== "string"){
+        return res.sendStatus(400)
+    }
     const newTweet = {username , tweet}
     tweets.push(newTweet) 
 
@@ -37,7 +46,7 @@ server.post("/tweets" , (req,res)=>{
 })
 
 server.get("/usu" , (req ,res)=>{
-    res.send(tweets)
+    res.send(usuarios)
 })
 
 server.listen(5000);
