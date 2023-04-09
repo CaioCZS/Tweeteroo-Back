@@ -44,15 +44,15 @@ server.get("/tweets", (req, res) => {
 	let tweetsFiltrado = []
 	if(tweets.length < 11){
 		tweets.forEach((t) => {
-			const { avatar } = usuarios.find((u) => u.username === t.username)
-			const newTweet = {...t , avatar }
+			const ttUser = usuarios.find((u) => u.username === t.username)
+			const newTweet = {...t , avatar : ttUser.avatar}
 			tweetsFiltrado.push(newTweet)
 		})
 		
 	}else{
 		for(let i=tweets.length-1 ; i >= tweets.length - 10 ; i--){
-			const { avatar } = usuarios.find((u) => u.username === tweets[i].username)
-			const newTweet = {...tweets[i] , avatar }
+			const ttUser = usuarios.find((u) => u.username === tweets[i].username)
+			const newTweet = {...tweets[i] , avatar : ttUser.avatar}
 			tweetsFiltrado.push(newTweet)
 		}
 	}
