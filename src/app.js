@@ -4,7 +4,7 @@ import cors from "cors"
 const server = express()
 server.use(express.json())
 server.use(cors())
-let userAtual
+
 const usuarios = []
 const tweets = []
 
@@ -18,21 +18,20 @@ server.post("/sign-up", (req, res) => {
 	) {
 		return res.status(400).send("Todos os dados são obrigatórios!")
 	}
-	userAtual = { username, avatar }
-	usuarios.push(userAtual)
+	usuarios.push({ username, avatar })
 	res.status(201).send("OK")
 })
 
 server.post("/tweets", (req, res) => {
 	const { tweet } = req.body
 	const { user } = req.headers
-	if (!userAtual) {
-		return res.status(401).send("UNAUTHORIZED")
-	}
 
 	if (!tweet || typeof tweet !== "string" || !user ) {
 		return res.status(400).send("Todos os dados são obrigatórios!")
 	}
+	const usuarioCadastrado = usuarios.find((u) => u.username === user)
+	if (!usuarioCadastrado) return res.status(401).send("UNAUTHORIZED")
+
 	const newTweet = { username: user, tweet }
 	tweets.push(newTweet)
 
@@ -40,7 +39,7 @@ server.post("/tweets", (req, res) => {
 })
 
 server.get("/tweets", (req, res) => {
-	let tweetsFiltrado = []
+	const tweetsFiltrado = []
 	const  page  = Number(req.query.page)
 
 	if( page < 1){
@@ -71,7 +70,7 @@ server.get("/tweets", (req, res) => {
 })
 
 server.get("/tweets/:USERNAME", (req, res) => {
-	let tweetsFiltrado = []
+	const tweetsFiltrado = []
 	const { USERNAME } = req.params
 
 	if (!usuarios.find((u) => u.username === USERNAME)) {
