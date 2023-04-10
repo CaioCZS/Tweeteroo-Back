@@ -18,6 +18,8 @@ server.post("/sign-up", (req, res) => {
 	) {
 		return res.status(400).send("Todos os dados são obrigatórios!")
 	}
+	const existeUsu = usuarios.find((u) => u.username === username)
+	if(existeUsu)return res.sendStatus(409)
 	usuarios.push({ username, avatar })
 	res.status(201).send("OK")
 })
