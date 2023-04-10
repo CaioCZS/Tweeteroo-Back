@@ -41,6 +41,11 @@ server.post("/tweets", (req, res) => {
 
 server.get("/tweets", (req, res) => {
 	let tweetsFiltrado = []
+	const  page  = Number(req.query.page)
+
+	if( page < 1){
+		return res.status(400).send("Informe uma página válida!")
+	}
 
 	if (tweets.length < 11) {
 		tweets.forEach((t) => {
@@ -48,8 +53,14 @@ server.get("/tweets", (req, res) => {
 			const newTweet = { ...t, avatar: ttUser.avatar }
 			tweetsFiltrado.push(newTweet)
 		})
-	} else {
-		for (let i = tweets.length - 1; i >= tweets.length - 10; i--) {
+	} else { 
+		const pag = page ? page : 1 
+		const aux = page ? (page - 1)*10 : 0 
+
+		for (let i = tweets.length - (1+aux); i >= tweets.length - (10*pag); i--) {
+			if(!tweets[i]){
+				continue
+			}
 			const ttUser = usuarios.find((u) => u.username === tweets[i].username)
 			const newTweet = { ...tweets[i], avatar: ttUser.avatar }
 			tweetsFiltrado.push(newTweet)
